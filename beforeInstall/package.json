@@ -2,6 +2,9 @@
   "name": "beforeInstall",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "build": "sh ./build.sh"
+  },
   "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.968.0",
