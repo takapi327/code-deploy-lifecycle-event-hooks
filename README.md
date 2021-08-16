@@ -24,3 +24,9 @@ $ yarn init
 $ yarn add typescript
 $ yarn tsc --init
 ```
+
+## クローン
+```bash
+$ git clone git@github.com:takapi327/code-deploy-lifecycle-event-hooks.git
+$ yarn init or npm init
+```
