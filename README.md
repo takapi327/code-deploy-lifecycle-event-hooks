@@ -16,6 +16,7 @@ AWS CodeDeployのライフサイクルイベントフックで起動させるLam
 $ npm init
 $ npm install typescript
 $ npm tsc --init
+$ npm install --save-dev @types/node
 ```
 
 ### yarn
@@ -23,6 +24,7 @@ $ npm tsc --init
 $ yarn init
 $ yarn add typescript
 $ yarn tsc --init
+$ yarn add --dev @types/node
 ```
 
 ## クローン
