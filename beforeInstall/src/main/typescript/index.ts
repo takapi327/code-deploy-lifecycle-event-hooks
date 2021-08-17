@@ -7,7 +7,7 @@ import { CodeDeploy } from 'aws-sdk'
 
 const codeDeploy = new CodeDeploy({apiVersion: '2014-10-06'})
 
-exports.handler = async (event: any, context: any, callback: any) => {
+exports.handler = (event: any, context: any, callback: any) => {
 
   const { DeploymentId, LifecycleEventHookExecutionId } = event
 
@@ -16,12 +16,22 @@ exports.handler = async (event: any, context: any, callback: any) => {
    */
   const STATUS = 'Succeeded'
 
-  /**
-   * Pass AWS CodeDeploy the prepared validation test results.
-   */
-  return await codeDeploy.putLifecycleEventHookExecutionStatus({
+  const params = {
     deploymentId:                  DeploymentId,
     lifecycleEventHookExecutionId: LifecycleEventHookExecutionId,
     status:                        STATUS
-  }).promise()
+  }
+
+  /**
+   * Pass AWS CodeDeploy the prepared validation test results.
+   */
+  codeDeploy.putLifecycleEventHookExecutionStatus(params, (err, data) => {
+    if (err) {
+      // Validation failed.
+      callback('Validation test failed');
+    } else {
+      // Validation succeeded.
+      callback(null, 'Validation test succeeded');
+    }
+  })
 }
