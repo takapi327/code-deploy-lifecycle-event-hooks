@@ -30,6 +30,37 @@ exports.handler = (event: any, context: any, callback: any) => {
       // Validation failed.
       callback('Validation test failed');
     } else {
+      codeDeploy.getDeploymentTarget({
+        deploymentId: DeploymentId,
+        targetId:     "stg-sample-canary-deploy-cluster:stg-sample-canary-deploy-service"
+      }, (err, data: CodeDeploy.Types.GetDeploymentTargetOutput) => {
+        if (err) {
+          console.log("================================")
+          console.log("================================")
+          console.log(err)
+          console.log("================================")
+          console.log("================================")
+        } else {
+          console.log("==========batchGetApplications======================")
+          console.log("================================")
+          console.log(JSON.stringify(data.deploymentTarget?.ecsTarget?.taskSetsInfo))
+          /**
+           * {
+           *     "identifer": "ecs-svc/3605701707267980476",
+           *     "desiredCount": 1,
+           *     "pendingCount": 0,
+           *     "runningCount": 1,
+           *     "status": "PRIMARY",
+           *     "trafficWeight": 100,
+           *     "targetGroup": {
+           *         "name": "stg-sg-green-group"
+           *     },
+           *     "taskSetLabel": "Blue"
+           * }
+           */
+        }
+      })
+
       // Validation succeeded.
       callback(null, 'Validation test succeeded');
     }
