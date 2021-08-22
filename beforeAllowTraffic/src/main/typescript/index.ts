@@ -40,12 +40,34 @@ exports.handler = (event: any, context: any, callback: any) => {
   codeDeploy.putLifecycleEventHookExecutionStatus(params, (err, data) => {
     if (err) { console.log(err) }
     else {
-      console.log('===============putLifecycleEventHookExecutionStatus===================')
-      console.log(data)
-      const params = createSlackMessage()
-      web.chat.postMessage(params).then(
-        callback(null, 'Validation test succeeded')
-      ).catch(console.error)
+
+      codeDeploy.getDeployment({ deploymentId: DeploymentId }, (deploymentErr, getDeploymentOutput) => {
+        if (deploymentErr) { console.log(deploymentErr) }
+        else {
+
+          codeDeploy.getDeploymentGroup({
+            applicationName:     getDeploymentOutput.deploymentInfo?.applicationName!,
+            deploymentGroupName: getDeploymentOutput.deploymentInfo?.deploymentGroupName!
+          }, (deploymentGroupErr, getDeploymentGroupOutput) => {
+            if (deploymentGroupErr) { console.log(deploymentGroupErr) }
+            else {
+              const loadBalancerInfo = getDeploymentGroupOutput.deploymentGroupInfo?.loadBalancerInfo
+              console.log('=======================================')
+              console.log('=======================================')
+              console.log('===============loadBalancerInfo========================')
+              console.log(JSON.stringify(loadBalancerInfo))
+              console.log(JSON.stringify(loadBalancerInfo?.elbInfoList))
+              console.log(JSON.stringify(loadBalancerInfo?.targetGroupInfoList))
+              console.log(JSON.stringify(loadBalancerInfo?.targetGroupPairInfoList))
+              console.log('=======================================')
+              const params = createSlackMessage()
+              web.chat.postMessage(params).then(
+                callback(null, 'Validation test succeeded')
+              ).catch(console.error)
+            }
+          })
+        }
+      })
     }
   })
 }
