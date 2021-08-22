@@ -32,7 +32,7 @@ export function createSlackMessage(
         "fields": [
           {
             "type": "mrkdwn",
-            "text": "*applicationName:*"
+            "text": "*Application Name:*"
           },
           {
             "type": "mrkdwn",
@@ -40,7 +40,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": "*deploymentGroupName:*"
+            "text": "*Deployment Group Name:*"
           },
           {
             "type": "mrkdwn",
@@ -48,7 +48,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": "*deploymentConfigName:*"
+            "text": "*Deployment Config Name:*"
           },
           {
             "type": "mrkdwn",
@@ -56,13 +56,16 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": "*deploymentStyle:*"
+            "text": "*Deployment Style:*"
           },
           {
             "type": "mrkdwn",
             "text": deploymentGroupInfo?.deploymentStyle?.deploymentType
           },
         ]
+      },
+      {
+        "type": "divider"
       },
       {
         "type": "section",
