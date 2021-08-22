@@ -8,10 +8,18 @@ export function createSlackMessage(
     channel: process.env.SLACK_CHANNEL!,
     blocks:  [
       {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "CodeDeployのBeforeInstallアクションの通知",
+          "emoji": true
+        }
+      },
+      {
         "type": "section",
         "text": {
           "type": "plain_text",
-          "text": "Notification of CodeDeploy's BeforInstall event",
+          "text": "CodeDeployのInstallを開始しました",
           "emoji": true
         }
       },
