@@ -40,12 +40,35 @@ exports.handler = (event: any, context: any, callback: any) => {
   codeDeploy.putLifecycleEventHookExecutionStatus(params, (err, data) => {
     if (err) { console.log(err) }
     else {
-      console.log('===============putLifecycleEventHookExecutionStatus===================')
-      console.log(data)
-      const params = createSlackMessage()
-      web.chat.postMessage(params).then(
-        callback(null, 'Validation test succeeded')
-      ).catch(console.error)
+      codeDeploy.getDeployment({ deploymentId: DeploymentId }, (deploymentErr, getDeploymentOutput) => {
+        if (deploymentErr) { console.log(deploymentErr) }
+        else {
+          codeDeploy.getDeploymentGroup({
+            applicationName:     getDeploymentOutput.deploymentInfo?.applicationName!,
+            deploymentGroupName: getDeploymentOutput.deploymentInfo?.deploymentGroupName!
+          }, (deploymentGroupErr, getDeploymentGroupOutput) => {
+            if (deploymentGroupErr) { console.log(deploymentGroupErr) }
+            else {
+              const ecsService = getDeploymentGroupOutput.deploymentGroupInfo?.ecsServices?.shift()
+
+              codeDeploy.getDeploymentTarget({
+                deploymentId: DeploymentId,
+                targetId:     `${ecsService?.clusterName}:${ecsService?.serviceName}`
+              }, (deploymentTargetErr, getDeploymentTargetOutput) => {
+                if (deploymentTargetErr) { console.log(deploymentTargetErr) }
+                else {
+                  console.log('======================================')
+                  console.log(JSON.stringify(getDeploymentTargetOutput.deploymentTarget?.ecsTarget))
+                  const params = createSlackMessage()
+                  web.chat.postMessage(params).then(
+                    callback(null, 'Validation test succeeded')
+                  ).catch(console.error)
+                }
+              })
+            }
+          })
+        }
+      })
     }
   })
 }
