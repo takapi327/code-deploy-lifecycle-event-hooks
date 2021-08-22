@@ -1,6 +1,6 @@
 /*
  * Describe the settings related to BeforeInstall,
- *  which is one of the deployment lifecycle event hooks.
+ * which is one of the deployment lifecycle event hooks.
  */
 
 import { CodeDeploy } from 'aws-sdk'
