@@ -37,7 +37,7 @@ exports.handler = (event: any, context: any, callback: any) => {
   /**
    * Pass AWS CodeDeploy the prepared validation test results.
    */
-  codeDeploy.putLifecycleEventHookExecutionStatus(params, (err, data) => {
+  codeDeploy.putLifecycleEventHookExecutionStatus(params, (err, _) => {
     if (err) { console.log(err) }
     else {
 
@@ -51,19 +51,30 @@ exports.handler = (event: any, context: any, callback: any) => {
           }, (deploymentGroupErr, getDeploymentGroupOutput) => {
             if (deploymentGroupErr) { console.log(deploymentGroupErr) }
             else {
-              const loadBalancerInfo = getDeploymentGroupOutput.deploymentGroupInfo?.loadBalancerInfo
-              console.log('=======================================')
-              console.log('=======================================')
-              console.log('===============loadBalancerInfo========================')
-              console.log(JSON.stringify(loadBalancerInfo))
-              console.log(JSON.stringify(loadBalancerInfo?.elbInfoList))
-              console.log(JSON.stringify(loadBalancerInfo?.targetGroupInfoList))
-              console.log(JSON.stringify(loadBalancerInfo?.targetGroupPairInfoList))
-              console.log('=======================================')
-              const params = createSlackMessage()
-              web.chat.postMessage(params).then(
-                callback(null, 'Validation test succeeded')
-              ).catch(console.error)
+              const ecsService = getDeploymentGroupOutput.deploymentGroupInfo?.ecsServices?.shift()
+
+              codeDeploy.getDeploymentTarget({
+                deploymentId: DeploymentId,
+                targetId:     `${ecsService?.clusterName}:${ecsService?.serviceName}`
+              }, (deploymentTargetErr, getDeploymentTargetOutput) => {
+                if (deploymentTargetErr) { console.log(deploymentTargetErr) }
+                else {
+
+                  console.log('======================================')
+                  console.log('======================================')
+                  console.log('======================================')
+                  console.log(getDeploymentTargetOutput.deploymentTarget)
+                  console.log('======================================')
+                  console.log(JSON.stringify(getDeploymentTargetOutput.deploymentTarget?.ecsTarget))
+                  console.log('======================================')
+                  console.log(JSON.stringify(getDeploymentTargetOutput.deploymentTarget?.ecsTarget?.lifecycleEvents))
+                  console.log('======================================')
+                  const params = createSlackMessage(getDeploymentTargetOutput.deploymentTarget?.ecsTarget)
+                  web.chat.postMessage(params).then(
+                    callback(null, 'Validation test succeeded')
+                  ).catch(console.error)
+                }
+              })
             }
           })
         }
