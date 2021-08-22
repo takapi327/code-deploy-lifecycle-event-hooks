@@ -2,7 +2,6 @@ import { CodeDeploy } from "aws-sdk"
 
 export function createSlackMessage(
   deploymentGroupInfo: CodeDeploy.DeploymentGroupInfo | undefined,
-  taskSet:             CodeDeploy.ECSTaskSet          | undefined
 ): any {
   return {
     channel: process.env.SLACK_CHANNEL!,
@@ -62,25 +61,18 @@ export function createSlackMessage(
             "type": "mrkdwn",
             "text": deploymentGroupInfo?.deploymentStyle?.deploymentType
           },
+          {
+            "type": "mrkdwn",
+            "text": "*ComputePlatform:*"
+          },
+          {
+            "type": "mrkdwn",
+            "text": deploymentGroupInfo?.computePlatform
+          },
         ]
       },
       {
         "type": "divider"
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "plain_text",
-          "text": `computePlatform: ${deploymentGroupInfo?.computePlatform}`,
-          "emoji": true
-        }
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": `>desiredCount: ${taskSet?.desiredCount}\n>pendingCount: ${taskSet?.pendingCount}\n>runningCount: ${taskSet?.runningCount}\n>status: ${taskSet?.status}\n>taskSetLabel: ${taskSet?.taskSetLabel}`
-        }
       }
     ]
   }

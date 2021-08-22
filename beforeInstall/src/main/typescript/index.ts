@@ -49,24 +49,13 @@ exports.handler = (event: any, context: any, callback: any) => {
           }, (deploymentGroupErr, getDeploymentGroupOutput) => {
             if (deploymentGroupErr) { console.log(deploymentGroupErr) }
             else {
-              const ecsService = getDeploymentGroupOutput.deploymentGroupInfo?.ecsServices?.shift()
+              const deploymentGroupInfo = getDeploymentGroupOutput.deploymentGroupInfo
 
-              codeDeploy.getDeploymentTarget({
-                deploymentId: DeploymentId,
-                targetId:     `${ecsService?.clusterName}:${ecsService?.serviceName}`
-              }, (deploymentTargetErr, getDeploymentTargetOutput) => {
-                if (deploymentTargetErr) { console.log(deploymentTargetErr) }
-                else {
-                  const deploymentGroupInfo = getDeploymentGroupOutput.deploymentGroupInfo
-                  const taskSet             = getDeploymentTargetOutput.deploymentTarget?.ecsTarget?.taskSetsInfo?.shift()
-
-                  const params = createSlackMessage(deploymentGroupInfo, taskSet)
-                  web.chat.postMessage(params).then(
-                    // Validation succeeded.
-                    callback(null, 'Validation test succeeded')
-                  ).catch(console.error)
-                }
-              })
+              const params = createSlackMessage(deploymentGroupInfo)
+              web.chat.postMessage(params).then(
+                // Validation succeeded.
+                callback(null, 'Validation test succeeded')
+              ).catch(console.error)
             }
           })
         }
