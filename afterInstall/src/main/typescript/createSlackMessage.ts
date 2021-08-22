@@ -1,6 +1,7 @@
 export function createSlackMessage(): any {
   return {
     channel: process.env.SLACK_CHANNEL!,
+    text:    'CodeDeployのAfterInstallアクションの通知',
     blocks: [
       {
         "type": "header",
