@@ -68,7 +68,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": blueTaskSet?.desiredCount
+            "text": blueTaskSet?.desiredCount?.toString()
           },
           {
             "type": "mrkdwn",
@@ -76,7 +76,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": blueTaskSet?.pendingCount
+            "text": blueTaskSet?.pendingCount?.toString()
           },
           {
             "type": "mrkdwn",
@@ -84,7 +84,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": blueTaskSet?.runningCount
+            "text": blueTaskSet?.runningCount?.toString()
           }
         ]
       },
@@ -127,7 +127,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": greenTaskSet?.desiredCount
+            "text": greenTaskSet?.desiredCount?.toString()
           },
           {
             "type": "mrkdwn",
@@ -135,7 +135,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": greenTaskSet?.pendingCount
+            "text": greenTaskSet?.pendingCount?.toString()
           },
           {
             "type": "mrkdwn",
@@ -143,8 +143,8 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": greenTaskSet?.runningCount
-          }
+            "text": greenTaskSet?.runningCount?.toString()
+          },
         ]
       },
       {
