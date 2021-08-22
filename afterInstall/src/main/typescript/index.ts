@@ -57,16 +57,10 @@ exports.handler = (event: any, context: any, callback: any) => {
               }, (deploymentTargetErr, getDeploymentTargetOutput) => {
                 if (deploymentTargetErr) { console.log(deploymentTargetErr) }
                 else {
-                  const blueTaskSet = getDeploymentTargetOutput.deploymentTarget?.ecsTarget?.taskSetsInfo?.map(taskSet => {
-                    if (taskSet.taskSetLabel === "Blue") {
-                      return taskSet
-                    }
-                  })
-                  const greenTaskSet = getDeploymentTargetOutput.deploymentTarget?.ecsTarget?.taskSetsInfo?.map(taskSet => {
-                    if (taskSet.taskSetLabel === "Green") {
-                      return taskSet
-                    }
-                  })
+                  const taskSetsInfo = getDeploymentTargetOutput.deploymentTarget?.ecsTarget?.taskSetsInfo
+                  const blueTaskSet  = taskSetsInfo?.filter(taskSet => taskSet.taskSetLabel === "Blue")
+                  const greenTaskSet = taskSetsInfo?.filter(taskSet => taskSet.taskSetLabel === "Green")
+
                   const params = createSlackMessage(blueTaskSet?.shift(), greenTaskSet?.shift())
                   web.chat.postMessage(params).then(
                     callback(null, 'Validation test succeeded')

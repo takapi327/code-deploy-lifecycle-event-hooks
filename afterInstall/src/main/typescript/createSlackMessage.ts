@@ -52,7 +52,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": blueTaskSet?.status
+            "text": `${blueTaskSet?.status}`
           },
           {
             "type": "mrkdwn",
@@ -68,7 +68,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": blueTaskSet?.desiredCount?.toString()
+            "text": `${blueTaskSet?.desiredCount}`
           },
           {
             "type": "mrkdwn",
@@ -76,7 +76,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": blueTaskSet?.pendingCount?.toString()
+            "text": `${blueTaskSet?.pendingCount}`
           },
           {
             "type": "mrkdwn",
@@ -84,7 +84,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": blueTaskSet?.runningCount?.toString()
+            "text": `${blueTaskSet?.runningCount}`
           }
         ]
       },
@@ -111,7 +111,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": greenTaskSet?.status
+            "text": `${greenTaskSet?.status}`
           },
           {
             "type": "mrkdwn",
@@ -127,7 +127,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": greenTaskSet?.desiredCount?.toString()
+            "text": `${greenTaskSet?.desiredCount}`
           },
           {
             "type": "mrkdwn",
@@ -135,7 +135,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": greenTaskSet?.pendingCount?.toString()
+            "text": `${greenTaskSet?.pendingCount}`
           },
           {
             "type": "mrkdwn",
@@ -143,7 +143,7 @@ export function createSlackMessage(
           },
           {
             "type": "mrkdwn",
-            "text": greenTaskSet?.runningCount?.toString()
+            "text": `${greenTaskSet?.runningCount}`
           },
         ]
       },
