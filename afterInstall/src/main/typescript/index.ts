@@ -5,7 +5,11 @@
 
 import { CodeDeploy } from 'aws-sdk'
 
+import { WebClient } from '@slack/web-api'
+
 const codeDeploy = new CodeDeploy({ apiVersion: '2014-10-06' })
+
+import { createSlackMessage } from './createSlackMessage'
 
 exports.handler = (event: any, context: any, callback: any) => {
 
@@ -13,6 +17,11 @@ exports.handler = (event: any, context: any, callback: any) => {
    * Response CodeDeploy lifecycle event
    */
   const { DeploymentId, LifecycleEventHookExecutionId } = event
+
+  /**
+   * API Client for Slack
+   */
+  const web = new WebClient(process.env.SLACK_API_TOKEN)
 
   /**
    * 'Succeeded' or 'Failed'
@@ -33,7 +42,10 @@ exports.handler = (event: any, context: any, callback: any) => {
     else {
       console.log('===============putLifecycleEventHookExecutionStatus===================')
       console.log(data)
-      callback(null, 'Validation test succeeded')
+      const params = createSlackMessage()
+      web.chat.postMessage(params).then(
+        callback(null, 'Validation test succeeded')
+      ).catch(console.error)
     }
   })
 }
