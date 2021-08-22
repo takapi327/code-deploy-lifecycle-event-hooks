@@ -37,15 +37,46 @@ exports.handler = (event: any, context: any, callback: any) => {
   /**
    * Pass AWS CodeDeploy the prepared validation test results.
    */
-  codeDeploy.putLifecycleEventHookExecutionStatus(params, (err, data) => {
+  codeDeploy.putLifecycleEventHookExecutionStatus(params, (err, _) => {
     if (err) { console.log(err) }
     else {
-      console.log('===============putLifecycleEventHookExecutionStatus===================')
-      console.log(data)
-      const params = createSlackMessage()
-      web.chat.postMessage(params).then(
-        callback(null, 'Validation test succeeded')
-      ).catch(console.error)
+      codeDeploy.getDeployment({ deploymentId: DeploymentId }, (deploymentErr, getDeploymentOutput) => {
+        if (deploymentErr) { console.log(deploymentErr) }
+        else {
+          codeDeploy.getDeploymentGroup({
+            applicationName:     getDeploymentOutput.deploymentInfo?.applicationName!,
+            deploymentGroupName: getDeploymentOutput.deploymentInfo?.deploymentGroupName!
+          }, (deploymentGroupErr, getDeploymentGroupOutput) => {
+            if (deploymentGroupErr) { console.log(deploymentGroupErr) }
+            else {
+              const ecsService = getDeploymentGroupOutput.deploymentGroupInfo?.ecsServices?.shift()
+
+              codeDeploy.getDeploymentTarget({
+                deploymentId: DeploymentId,
+                targetId:     `${ecsService?.clusterName}:${ecsService?.serviceName}`
+              }, (deploymentTargetErr, getDeploymentTargetOutput) => {
+                if (deploymentTargetErr) { console.log(deploymentTargetErr) }
+                else {
+                  const blueTaskSet = getDeploymentTargetOutput.deploymentTarget?.ecsTarget?.taskSetsInfo?.map(taskSet => {
+                    if (taskSet.taskSetLabel === "Blue") {
+                      return taskSet
+                    }
+                  })
+                  const greenTaskSet = getDeploymentTargetOutput.deploymentTarget?.ecsTarget?.taskSetsInfo?.map(taskSet => {
+                    if (taskSet.taskSetLabel === "Green") {
+                      return taskSet
+                    }
+                  })
+                  const params = createSlackMessage(blueTaskSet?.shift(), greenTaskSet?.shift())
+                  web.chat.postMessage(params).then(
+                    callback(null, 'Validation test succeeded')
+                  ).catch(console.error)
+                }
+              })
+            }
+          })
+        }
+      })
     }
   })
 }
